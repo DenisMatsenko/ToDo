@@ -19,15 +19,15 @@ function LeftSide() {
 
             <div className="Line"></div>
 
-            <div className="Filtrate">
-                <div className="FiltrateText">Filtr</div>
-                <div className="FiltrateList">
-                    <div className="Filtr"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>All</div></button></div>
-                    <div className="Filtr"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>By marks</div></button></div>
-                    <div className="Filtr"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>By date</div></button></div>
-                    <div className="Filtr"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Importent</div></button></div>
-                    <div className="Filtr"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Complete</div></button></div>
-                    <div className="Filtr"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Uncomplete</div></button></div>
+            <div className="Filtr">
+                <div className="FiltrText">Filtr</div>
+                <div className="FiltrList">
+                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>All</div></button></div>
+                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>By marks</div></button></div>
+                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>By date</div></button></div>
+                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Importent</div></button></div>
+                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Complete</div></button></div>
+                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Uncomplete</div></button></div>
                 </div>
             </div>
 

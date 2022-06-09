@@ -229,9 +229,9 @@ body, main{
 }
 
 
-.Filtrate {
+.Filtr {
     width: 100%;
-    height: 35.4rem;
+    height: 100%;
 
     display: flex;
     flex-direction: column;
@@ -240,17 +240,17 @@ body, main{
 
 }
 
-.FiltrateText {
+.FiltrText {
     font-size: 170%;
     font-weight: bold;
     margin: 20px;
 }
 
-.FiltrateList {
+.FiltrList {
     width: 70%;
 }
 
-.Filtr {
+.FiltrItem {
 
     display: flex;
     font-size: 120%;
@@ -289,7 +289,7 @@ body, main{
 }
 
 .Footer {
-    height: 3.6rem;
+    height: 4rem;
     display: flex;
     justify-content: center;
     align-items: center;
