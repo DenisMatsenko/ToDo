@@ -1,8 +1,11 @@
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import LeftSide from "./components/leftSide";
 import RightSide from "./components/RightSide";
 import "./components/AllStyle.css";
 import AddPostWind from "./components/AddPostWind";
+
+
+
 
 function App() {
   const [AddPostWind_active, setAddPostWind_active] = useState(false)  
@@ -19,7 +22,7 @@ function AddPostToPosts(newPost) {
 }
 
   return (
-    <div className="App">
+    <div className="App" id="App">
       <AddPostWind AddPostWind_active={AddPostWind_active} setAddPostWind_active={setAddPostWind_active} AddPostToPosts={AddPostToPosts}/>
       <LeftSide/>
       <RightSide setAddPostWind_active={setAddPostWind_active} post={post}/>

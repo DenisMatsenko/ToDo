@@ -1,18 +1,10 @@
 import React, { useState, useEffect }from "react";
 import "./AddPostWind_style.css"
+import InputModuleBtnBig from "./InputModuleBtnBig";
 import Myinput from "./Myinput";
 
 function AddPostWind(props) {
     const [Post, setPost] = useState({id: '', text: '', autor: ''})
-
-
-    // const i =<input
-    //     id="111"
-    //     maxLength={25} 
-    //     value={Post.text} 
-    //     onChange={e => setPost({...Post, text: e.target.value})} 
-    //     type="text" />
-
 
     // Переключатель для модуля добавления
     function Switch(state) {
@@ -52,20 +44,31 @@ function AddPostWind(props) {
         <div className={props.AddPostWind_active ? "AddPostWind" : "AddPostWindNone"} onClick={(obj) => {if(obj.target.className === 'AddPostWind')
         Switch(false)}}>
             <div className="APWContent" >
-                <div>title</div> 
-                <input 
-                    autoFocus
-                    onFocus={() => {console.log("focused")}} 
-                    onBlur={() => {console.log("blured")}} 
-                    id="input" 
+
+                <div className="TextInputWrapper">
+                    <div className="Titule">Task</div> 
+                    <input 
+                    placeholder="Enter your task here:"
+                    className="TaskInput"
+                    id="input"
                     maxLength={25} 
                     value={Post.text} 
                     onChange={e => setPost({...Post, text: e.target.value})} 
                     type="text" />
+                </div>
 
+                <div className="MarksWrapper">
+                    <div className="Titule">Marks</div>
+                    <div className="BtnsList">
 
-                <button onClick={CreateNewPost}>ja</button>
-                <button onClick={() => {document.getElementById("input").focus()}}>1</button>
+                    </div>
+                </div>
+
+                <div className="FooterWrapper">
+                    <InputModuleBtnBig fun={CreateNewPost} text={"Cancel"}/>
+                    <InputModuleBtnBig fun={CreateNewPost} text={"Add"}/>
+                </div>
+                
             </div>
         </div>
     )}
