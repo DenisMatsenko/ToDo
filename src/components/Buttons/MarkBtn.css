@@ -1,0 +1,50 @@
+.MarkBtnWrapper {
+    height: min-content;
+    width: min-content;
+
+    margin-bottom: 8px;
+    margin-right: 9px;
+}
+
+.MarkBtn{
+    height: 100%;
+    width: 100%;
+    padding: 4px 20px 4px 20px;
+
+    letter-spacing: 1.0px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #05172B;
+
+    background-color: white;
+    border-radius: 100px;
+
+    border: 2px solid #05172B;
+
+    outline: none;
+}
+
+.MarkBtnActive{
+    height: 100%;
+    width: 100%;
+    padding: 4px 20px 4px 20px;
+
+    letter-spacing: 1.0px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+
+    background-color: #05172B;
+    border-radius: 100px;
+
+    border: 2px solid #05172B;
+
+    outline: none;
+}
+
+.MarkBtn:hover {
+    background-color: #afafaf;
+    color: white; 
+
+}
+

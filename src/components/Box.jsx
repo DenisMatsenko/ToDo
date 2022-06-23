@@ -6,8 +6,9 @@ function Box(props) {
         <div className="Box">
             <div className="NameOfIventList">{props.name}</div>
             <div className="ItemsList">
+
             {props.post.map(msg => 
-                <Item text={msg.text} autor={msg.autor} id={msg.id} key={msg.id}/>
+                <Item text={msg.text} marks={msg.marks} id={msg.id} key={msg.id} done={msg.done} DoneUdate={props.DoneUdate}/>
                 )}
 
             </div>

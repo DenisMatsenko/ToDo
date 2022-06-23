@@ -1,17 +1,15 @@
 import React from "react";
 import style from "./AllStyle.css";
 
-function LeftSide() {
+function LeftSide(props) {
 
-
-
-    function Oc(props) {
-        console.log(props.target.textContent)   
+    function FiltrBtn(p) {
+        props.setFiltrName(p.target.textContent)
     }
 
     return(
         
-        <div className="LeftSide">
+        <div className={props.leftMenu_acvive ? "LeftSide" : "LeftSideClose"}>
             <div className="Header">
                 <div className="Name">Denis Matsenko</div>
                 <div className="Email">denismatsenko@gmail.com</div>
@@ -22,12 +20,12 @@ function LeftSide() {
             <div className="Filtr">
                 <div className="FiltrText">Filtr</div>
                 <div className="FiltrList">
-                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>All</div></button></div>
-                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>By marks</div></button></div>
-                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>By date</div></button></div>
-                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Importent</div></button></div>
-                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Complete</div></button></div>
-                    <div className="FiltrItem"><button onClick={Oc} className="FilBtn"><div className="Ti2"></div><div>Uncomplete</div></button></div>
+                    <div className="FiltrItem"><button onClick={FiltrBtn} className="FilBtn"><div className="Ti2"></div><div>All</div></button></div>
+                    <div className="FiltrItem"><button onClick={FiltrBtn} className="FilBtn"><div className="Ti2"></div><div>By marks</div></button></div>
+                    <div className="FiltrItem"><button onClick={FiltrBtn} className="FilBtn"><div className="Ti2"></div><div>By date</div></button></div>
+                    <div className="FiltrItem"><button onClick={FiltrBtn} className="FilBtn"><div className="Ti2"></div><div>Important</div></button></div>
+                    <div className="FiltrItem"><button onClick={FiltrBtn} className="FilBtn"><div className="Ti2"></div><div>Complete</div></button></div>
+                    <div className="FiltrItem"><button onClick={FiltrBtn} className="FilBtn"><div className="Ti2"></div><div>Uncomplete</div></button></div>
                 </div>
             </div>
 

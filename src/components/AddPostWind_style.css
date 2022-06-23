@@ -76,3 +76,11 @@
     justify-content: flex-end;
     align-items: flex-end;
 }
+
+.BtnsList {
+    max-height: 165px;
+    width: 100%;
+
+    display: flex;
+    flex-wrap: wrap;
+}

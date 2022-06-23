@@ -1,4 +1,4 @@
-.InputModuleBtnBig {
+.BtnBig {
     height: 45px;
     width: 120px;
 
@@ -8,22 +8,7 @@
     
 }
 
-.Add {
-    letter-spacing: 1.5px;
-    font-size: 21px;
-    font-weight: bold;
-    color: white;
-    height: 100%;
-    width: 100%;
-    background-color: #05172B;
-    border-radius: 100px;
-
-    border: 2px solid #05172B;
-
-    outline: none;
-}
-
-.Cancel {
+.Btn{
     letter-spacing: 1.5px;
     font-size: 21px;
     font-weight: bold;
@@ -34,6 +19,13 @@
     border-radius: 100px;
 
     border: 2px solid #05172B;
+    transition: all 0.1s ease;
 
     outline: none;
+}
+
+.Btn:hover {
+    background-color: #05172B;
+    color: white; 
+    transition: all 0.1s ease;
 }
