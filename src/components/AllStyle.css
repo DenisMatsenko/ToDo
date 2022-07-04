@@ -106,11 +106,11 @@ body, main{
 
 .Box {
     width: 100%;
-    height: min-content;
+
 
     transition: all 0.3s ease;
-
-    padding: 1.7%;
+    padding-bottom: 13px;
+    
     margin: 0px;
 
     display: flex;
@@ -145,6 +145,7 @@ body, main{
 }
 .NameOfIventList {
     width: 80%;
+    margin-left: 15px;
 
     color: white;
     font-weight: bold;
@@ -153,7 +154,7 @@ body, main{
 }
 
 .Item {
-    transition: all 0.3s ease;
+    transition: all 1.5s ease;
     width: 80%;
     height: 5rem;
     margin: 5px;
@@ -169,7 +170,7 @@ body, main{
 }
 
 .ItemOff {
-    transition: all 0.3s ease;
+    transition: all 1s ease;
     width: 80%;
     height: 5rem;
     margin: 5px;
@@ -187,6 +188,18 @@ body, main{
 .DoneBreaker {
     height: 100%;
     width: 4.4rem;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.BinWrapper {
+    height: 100%;
+    width: 4.4rem;
+
 
     display: flex;
     justify-content: center;
@@ -427,7 +440,7 @@ body, main{
     align-items: center;
 }
 
-.WBtn {
+.WBtnOpt {
     height: 38px;
     width: 60px;
     margin-left: 5px;
@@ -440,7 +453,7 @@ body, main{
     align-items: center;
 }
 
-.Btn {
+.BtnOpt {
     height: 100%;
     width: 100%;
     text-decoration: none;
@@ -453,7 +466,7 @@ body, main{
     align-items: center;
 }
 
-.Btn:hover {
+.BtnOpt:hover {
     background-color: rgb(244, 244, 244);
 }
 

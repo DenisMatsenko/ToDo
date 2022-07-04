@@ -8,7 +8,7 @@ function Box(props) {
             <div className="ItemsList">
 
             {props.post.map(msg => 
-                <Item text={msg.text} marks={msg.marks} id={msg.id} key={msg.id} done={msg.done} DoneUdate={props.DoneUdate}/>
+                <Item text={msg.text} marks={msg.marks} id={msg.id} key={msg.id} done={msg.done} RemoveFromDB={props.RemoveFromDB} DoneUdate={props.DoneUdate}/>
                 )}
 
             </div>

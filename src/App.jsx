@@ -6,6 +6,9 @@ import AddPostWind from "./components/AddPostWind";
 import Box from "./components/Box";
 import { createFactory } from "react";
 
+import {db} from "./firebase"
+import {set, ref, onValue, remove, update} from "firebase/database"
+
 function App() {
   const [AddPostWind_active, setAddPostWind_active] = useState(false);
   const [leftMenu_acvive, setLeftMenu_acvive] = useState(false);
@@ -32,73 +35,70 @@ function App() {
     };});
 
   const[allPosts, setAllPosts] = useState([
-    {id: 11241312414, text: "hi im denys", done: false, marks: ["Today ", "Work "],},
-    {id: 11241312424, text: "hi im michal", done: false, marks: ["Important ", "Work "],},
-    {id: 11241312444, text: "hi im tomas", done: false, marks: ["Today ", "Work "],},
+    // {id: 11241312414, text: "hi im denys", done: false, marks: ["Everyday ", "Work "],},
+    // {id: 11241312424, text: "hi im michal", done: false, marks: ["Tomorrow ", "Important ", "Work "],},
+    // {id: 11241312444, text: "hi im tomas", done: false, marks: ["Today ", "Work "],},
   ])
-
-  const [post, setPost] = useState(allPosts)
   const[filtrBoxes, setFiltrBoxes] = useState([])
 
+  const ClickOptBtn = (info) => {
+    console.log(info)
+  }
+
   const DoneUdate = (info) => {
-    var tempArr = post;
-    var i = IndexFind(info)
+    // var tempArr = allPosts;
+    // var i = IndexFind(info)
 
-      if(tempArr[i].id.toString() == info && tempArr[i].done === false) {
-        tempArr[i].done = !tempArr[i].done
-      }
+    //   if(tempArr[i].id.toString() == info && tempArr[i].done === false) {
+    //     //console.log("before", tempArr[i])
+    //     tempArr[i].done = !tempArr[i].done
+    //     // console.log("after", tempArr[i])
+    //   }
 
-      else if(tempArr[i].id.toString() == info && tempArr[i].done === true) {
-        tempArr[i].done = !tempArr[i].done
-      }
+    //   else if(tempArr[i].id.toString() == info && tempArr[i].done === true) {
+    //     //console.log("before", tempArr[i])
+    //     tempArr[i].done = !tempArr[i].done
+    //     //console.log("after", tempArr[i])
+    //   }
 
-      OrderOfItemsAndFiltr(tempArr)
-    }
+    //   setAllPosts(tempArr)
+
+    UpdateDB(info)
+
+
+
+    Filtr()
+  }
   
 
   const IndexFind = (info) => {
-    for (let i = 0; i < post.length; i++) {
-      if(post[i].id.toString() == info) {
+    for (let i = 0; i < allPosts.length; i++) {
+      if(allPosts[i].id.toString() == info) {
         return i;
       }
     }
   }
 
 
-  const PushBoxes = () => {
-    setFiltrBoxes([
-      <Box name={filtrName} post={post} key={1} DoneUdate={DoneUdate}/>,
-       ])
+  // const PushBoxes = () => {
+  //   setFiltrBoxes([
+  //     <Box name={filtrName} post={post} key={1} DoneUdate={DoneUdate}/>,
+  //      ])
+  // }
 
-    // switch(filtrName) {
-    //   case "All":
 
-    //     setFiltrBoxes([
-    //       <Box name={"All"} post={post} key={1} DoneUdate={DoneUdate}/>,
-    //     ])
-    //     console.log("!!! All pushed !!!")
-    //     console.log(post)
-    //     break;
-
-    //   case "By date":
-    //     break;
-
-    //   case "Important":
-       
-    //     setFiltrBoxes([
-    //       <Box name={"Important"} post={post} key={2} DoneUdate={DoneUdate}/>,
-    //     ])
-    //     console.log("!!! Important pushed !!!")
-    //     console.log(post)
-    //     break;
-    // }
-  }
 
   const Filtr = () => {
     let myArr = []
+    let boxesArr = []
+    let marksForFiltrArr = []
+
     switch(filtrName) {
       case "All":
-        return allPosts;
+        myArr = allPosts
+
+        setFiltrBoxes([<Box name={"All"} post={OrderOfItemsAndFiltr(myArr)} key={1} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>,])
+        break;
 
       case "Important":
         myArr = []
@@ -109,29 +109,118 @@ function App() {
               myArr = [...myArr, allPosts[i]] 
           }
         }
-        return myArr
-      
+        
+        setFiltrBoxes([<Box name={"Important"} post={OrderOfItemsAndFiltr(myArr)} key={1} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>,])
+        break;
+
       case "Complete":
         myArr =[]
         for (let i = 0; i < allPosts.length; i++) {
-            if(allPosts[i].done === true)
+            if(allPosts[i].done)
               myArr = [...myArr, allPosts[i]]
         }
-        return myArr
+
+        setFiltrBoxes([<Box name={"Complete"} post={OrderOfItemsAndFiltr(myArr)} key={1} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>,])
+        break;
 
       case "Uncomplete":
-        myArr =[]
+        myArr = []
         for (let i = 0; i < allPosts.length; i++) {
-            if(allPosts[i].done === false)
+            if(!allPosts[i].done)
               myArr = [...myArr, allPosts[i]]
         }
-        return myArr
+
+        setFiltrBoxes([<Box name={"Uncomplete"} post={OrderOfItemsAndFiltr(myArr)} key={1} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>,])
+        break;
+      
+      case "By date":
+        boxesArr = []
+        marksForFiltrArr = ["Everyday ", "Today ", "Tomorrow "]
+
+        for (let d = 0; d < marksForFiltrArr.length; d++) {
+          myArr = []
+          for (let i = 0; i < allPosts.length; i++) {
+            for (let u = 0; u < allPosts[i].marks.length; u++) {
+              if(allPosts[i].marks[u] === marksForFiltrArr[d]) 
+              myArr = [...myArr, allPosts[i]] 
+            }
+          }
+          boxesArr = [...boxesArr, <Box name={marksForFiltrArr[d]} post={OrderOfItemsAndFiltr(myArr)} key={1}  RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>]
+        }
+        setFiltrBoxes(boxesArr)
+        break;
+
+      case "By marks":
+        boxesArr = []
+        marksForFiltrArr = []
+
+        for (let i = 0; i < marks.length; i++) {
+          marksForFiltrArr = [...marksForFiltrArr, marks[i].mark + " "]
+        }
+
+        for (let d = 0; d < marksForFiltrArr.length; d++) {
+          myArr = []
+          for (let i = 0; i < allPosts.length; i++) {
+            for (let u = 0; u < allPosts[i].marks.length; u++) {
+              if(allPosts[i].marks[u] === marksForFiltrArr[d]) 
+              myArr = [...myArr, allPosts[i]] 
+            }
+          }
+          if (myArr.length !== 0) {
+          console.log(marksForFiltrArr[d], myArr)
+          boxesArr = [...boxesArr, <Box name={marksForFiltrArr[d]} post={OrderOfItemsAndFiltr(myArr)} key={1} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>]}
+        }
+        setFiltrBoxes(boxesArr)
+        break;
+
+
+      // case "Important":  
+      //   myArr = []
+
+      //   for (let i = 0; i < allPosts.length; i++) {
+      //     for (let u = 0; u < allPosts[i].marks.length; u++) {
+      //       if(allPosts[i].marks[u] === "Important ") 
+      //         myArr = [...myArr, allPosts[i]] 
+      //     }
+      //   }
+      //   return myArr
+
+      //   case "By date":
+      //     myArr = [
+      //       {id: 11241312414, text: "hi im denys", done: false, marks: ["Today ", "Work "],},
+      //       {id: 11241312424, text: "hi im michal", done: false, marks: ["Important ", "Work "],},
+      //       {id: 11241312444, text: "hi im tomas", done: false, marks: ["Today ", "Work "],},
+      //     ]
+  
+      //     // for (let i = 0; i < allPosts.length; i++) {
+      //     //   for (let u = 0; u < allPosts[i].marks.length; u++) {
+      //     //     if(allPosts[i].marks[u] === "Important ") 
+      //     //       myArr = [...myArr, allPosts[i]] 
+      //     //   }
+      //     // }
+      //     return myArr
+      
+      // case "Complete":
+      //   myArr =[]
+      //   for (let i = 0; i < allPosts.length; i++) {
+      //       if(allPosts[i].done === true)
+      //         myArr = [...myArr, allPosts[i]]
+      //   }
+      //   return myArr
+
+      // case "Uncomplete":
+      //   myArr =[]
+      //   for (let i = 0; i < allPosts.length; i++) {
+      //       if(allPosts[i].done === false)
+      //         myArr = [...myArr, allPosts[i]]
+      //   }
+      //   return myArr
     }
   }
 
-  const OrderOfItemsAndFiltr = () => {
+  const OrderOfItemsAndFiltr = (arr) => {
 
-      let myArr = Filtr()
+      let myArr = arr
       let myUnDoneArr = []
       let myDoneArr = []
 
@@ -141,11 +230,8 @@ function App() {
         else
           myDoneArr.push(myArr[i])
       }
-
-      setPost([...FiltrItemsById(myUnDoneArr), ...FiltrItemsById(myDoneArr)])
+      return ([...FiltrItemsById(myUnDoneArr), ...FiltrItemsById(myDoneArr)])
   }
-
-
 
   const FiltrItemsById = (arr) => {
     for (let i = 0; i < arr.length; i++) {
@@ -161,7 +247,7 @@ function App() {
     return arr;
   }
 
-  var marks = [
+  let marks = [
     {key: 1, mark: "Today"},
     {key: 2, mark: "Tomorrow"},
     {key: 3, mark: "Everyday"},
@@ -175,36 +261,70 @@ function App() {
     setMyAddMark(MyMarkArr)
   }
 
-  useEffect(() => {
-    PushBoxes()
-  }, [post]);
 
   useEffect(() => {
-    OrderOfItemsAndFiltr()
+    Filtr()
   }, [filtrName]);
 
 
   useEffect(() => {
-    setPost(allPosts)
-    OrderOfItemsAndFiltr()
+    Filtr()
   }, [allPosts]);
 
 
 
-  function AddPostToPosts(newPost) { 
-   setAllPosts([...allPosts, newPost])
-   setMyAddMark([])
-   setAddPostWind_active(false)
+//database functions//
+
+//write to db
+const AddToDB = (info) => {
+  set(ref(db, info.id.toString()), {
+    id: info.id,
+    text: info.text,
+    done: info.done,
+    marks: info.marks.length > 0 ? info.marks : [""]
+  })
+
+  setMyAddMark([])
+  setAddPostWind_active(false)
 }
+
+//read db
+useEffect(() => {
+  UpdateAllPosts()
+ }, []);
+
+ const UpdateAllPosts = () => { 
+  setAllPosts([])
+  console.log("RENDER!")
+  onValue(ref(db), (snapshot) => {
+    const data = snapshot.val();
+    if(data !== null) {
+      setAllPosts(Object.values(data))
+    }
+  })
+}
+
+//update db obj
+const UpdateDB = (info) => {
+  update(ref(db, info.id.toString()), {
+    done: !info.done
+  })
+}
+
+//delete
+const RemoveFromDB = (info) => {
+  remove(ref(db, info.id.toString()))
+  UpdateAllPosts()
+}
+
 
 // create props object
 
   return (
     <div className="App" id="App">
-      <AddPostWind myAddMark={myAddMark} AddMarksToPost={AddMarksToPost} marksArr={marksArr} setMarksArr={setMarksArr} marks={marks} AddPostWind_active={AddPostWind_active} setAddPostWind_active={setAddPostWind_active} AddPostToPosts={AddPostToPosts}/>
-      <LeftSide setFiltrName={setFiltrName} PushBoxes={PushBoxes} leftMenu_acvive={leftMenu_acvive}/>
-      <RightSide filtrBoxes={filtrBoxes} AddMarksToPost={AddMarksToPost} marks={marks} setMarksArr={setMarksArr} leftMenu_acvive={leftMenu_acvive} setLeftMenu_acvive={setLeftMenu_acvive} setAddPostWind_active={setAddPostWind_active} post={post}/>
-      
+      <AddPostWind myAddMark={myAddMark} AddMarksToPost={AddMarksToPost} marksArr={marksArr} setMarksArr={setMarksArr} marks={marks} AddPostWind_active={AddPostWind_active} setAddPostWind_active={setAddPostWind_active} AddPostToPosts={AddToDB}/>
+      <LeftSide ClickOptBtn={ClickOptBtn} setFiltrName={setFiltrName} leftMenu_acvive={leftMenu_acvive}/>
+      <RightSide  filtrBoxes={filtrBoxes} AddMarksToPost={AddMarksToPost} marks={marks} setMarksArr={setMarksArr} leftMenu_acvive={leftMenu_acvive} setLeftMenu_acvive={setLeftMenu_acvive} setAddPostWind_active={setAddPostWind_active}/>
     </div>
   );
 }

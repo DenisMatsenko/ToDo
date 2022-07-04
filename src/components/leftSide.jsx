@@ -32,9 +32,9 @@ function LeftSide(props) {
             <div className="Line"></div>
 
             <div className="Footer">
-                <div className="WBtn"><button className="Btn">P</button></div>
-                <div className="WBtn"><button className="Btn">S</button></div>
-                <div className="WBtn"><button className="Btn">T</button></div>
+                <div onClick={props.ClickOptBtn} className="WBtnOpt"><button className="BtnOpt">P</button></div>
+                <div onClick={props.ClickOptBtn} className="WBtnOpt"><button className="BtnOpt">S</button></div>
+                <div onClick={props.ClickOptBtn} className="WBtnOpt"><button className="BtnOpt">T</button></div>
             </div>
         </div>
     )}
