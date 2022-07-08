@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // import firebase from 'firebase/compat/app';
 // import 'firebase/compat/auth';
@@ -37,3 +38,16 @@ var firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app)
+export const auth = getAuth(app)
+
+const provider = new  GoogleAuthProvider() 
+
+export const SignInwithGoogle = () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      console.log("then")
+      localStorage.setItem("name", result.user.displayName)
+      localStorage.setItem("email", result.user.email)
+      localStorage.setItem("img", result.user.photoURL)
+    })
+}

@@ -6,12 +6,12 @@ import AddPostWind from "./components/AddPostWind";
 import Box from "./components/Box";
 import { createFactory } from "react";
 
-import {db} from "./firebase"
+import {db, SignInwithGoogle} from "./firebase"
 import {set, ref, onValue, remove, update} from "firebase/database"
 
 function App() {
   const [AddPostWind_active, setAddPostWind_active] = useState(false);
-  const [leftMenu_acvive, setLeftMenu_acvive] = useState(false);
+  const [leftMenu_acvive, setLeftMenu_acvive] = useState(true);
   const [marksArr, setMarksArr] = useState([]);
   const [addMarkToPost, setAddMarkToPost] = useState();
   const [myAddMark, setMyAddMark] = useState([]);
@@ -42,7 +42,9 @@ function App() {
   const[filtrBoxes, setFiltrBoxes] = useState([])
 
   const ClickOptBtn = (info) => {
-    console.log(info)
+    if(info.target.id === "Profile") {
+      UpdateUserInfo()
+    }
   }
 
   const DoneUdate = (info) => {
@@ -145,7 +147,7 @@ function App() {
               myArr = [...myArr, allPosts[i]] 
             }
           }
-          boxesArr = [...boxesArr, <Box name={marksForFiltrArr[d]} post={OrderOfItemsAndFiltr(myArr)} key={1}  RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>]
+          boxesArr = [...boxesArr, <Box name={marksForFiltrArr[d]} post={OrderOfItemsAndFiltr(myArr)} key={d}  RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>]
         }
         setFiltrBoxes(boxesArr)
         break;
@@ -168,7 +170,7 @@ function App() {
           }
           if (myArr.length !== 0) {
           console.log(marksForFiltrArr[d], myArr)
-          boxesArr = [...boxesArr, <Box name={marksForFiltrArr[d]} post={OrderOfItemsAndFiltr(myArr)} key={1} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>]}
+          boxesArr = [...boxesArr, <Box name={marksForFiltrArr[d]} post={OrderOfItemsAndFiltr(myArr)} key={d} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>]}
         }
         setFiltrBoxes(boxesArr)
         break;
@@ -272,12 +274,36 @@ function App() {
   }, [allPosts]);
 
 
+//////////////////////////////////////////////////////////User info functions////////////////////////////////////////////////////////
 
-//database functions//
+const[name, setName] = useState(localStorage.getItem("name"))
+const[email, setEmail] = useState(localStorage.getItem("email"))
+const[img, setImg] = useState(localStorage.getItem("img"))
 
+const UpdateUserInfo = () => {
+  SignInwithGoogle()
+
+  for (let i = 0; i <= 10000; i += 1000) {
+    setTimeout(UpdateInfo, i);
+  }
+}
+
+const UpdateInfo = () => {
+  setName(localStorage.getItem("name"))
+  setEmail(localStorage.getItem("email"))
+  setImg(localStorage.getItem("img"))
+  
+}
+
+
+
+///////////////////////////////////////////////////////////database functions/////////////////////////////////////////////////////////
 //write to db
 const AddToDB = (info) => {
-  set(ref(db, info.id.toString()), {
+
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1]  + "/" + info.id
+
+  set(ref(db, path), {
     id: info.id,
     text: info.text,
     done: info.done,
@@ -293,10 +319,15 @@ useEffect(() => {
   UpdateAllPosts()
  }, []);
 
+useEffect(() => {
+  UpdateAllPosts()
+}, [email]);
+
  const UpdateAllPosts = () => { 
   setAllPosts([])
-  console.log("RENDER!")
-  onValue(ref(db), (snapshot) => {
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1]
+
+  onValue(ref(db, path), (snapshot) => {
     const data = snapshot.val();
     if(data !== null) {
       setAllPosts(Object.values(data))
@@ -306,14 +337,17 @@ useEffect(() => {
 
 //update db obj
 const UpdateDB = (info) => {
-  update(ref(db, info.id.toString()), {
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/" +info.id
+  update(ref(db, path), {
     done: !info.done
   })
 }
 
 //delete
 const RemoveFromDB = (info) => {
-  remove(ref(db, info.id.toString()))
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/" + info.id
+  console.log("path: ",  path)
+  remove(ref(db, path))
   UpdateAllPosts()
 }
 
@@ -323,8 +357,8 @@ const RemoveFromDB = (info) => {
   return (
     <div className="App" id="App">
       <AddPostWind myAddMark={myAddMark} AddMarksToPost={AddMarksToPost} marksArr={marksArr} setMarksArr={setMarksArr} marks={marks} AddPostWind_active={AddPostWind_active} setAddPostWind_active={setAddPostWind_active} AddPostToPosts={AddToDB}/>
-      <LeftSide ClickOptBtn={ClickOptBtn} setFiltrName={setFiltrName} leftMenu_acvive={leftMenu_acvive}/>
-      <RightSide  filtrBoxes={filtrBoxes} AddMarksToPost={AddMarksToPost} marks={marks} setMarksArr={setMarksArr} leftMenu_acvive={leftMenu_acvive} setLeftMenu_acvive={setLeftMenu_acvive} setAddPostWind_active={setAddPostWind_active}/>
+      <LeftSide name={name} email={email} img={img} ClickOptBtn={ClickOptBtn} setFiltrName={setFiltrName} leftMenu_acvive={leftMenu_acvive}/>
+      <RightSide filtrBoxes={filtrBoxes} AddMarksToPost={AddMarksToPost} marks={marks} setMarksArr={setMarksArr} leftMenu_acvive={leftMenu_acvive} setLeftMenu_acvive={setLeftMenu_acvive} setAddPostWind_active={setAddPostWind_active}/>
     </div>
   );
 }

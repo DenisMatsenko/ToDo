@@ -11,8 +11,13 @@ function LeftSide(props) {
         
         <div className={props.leftMenu_acvive ? "LeftSide" : "LeftSideClose"}>
             <div className="Header">
-                <div className="Name">Denis Matsenko</div>
-                <div className="Email">denismatsenko@gmail.com</div>
+                <div className="HeaderLeftWrapper">
+                    <img className="ProfilePic" src={props.img} />
+                </div>
+                <div className="HeaderRightWrapper">
+                    <div className="Name">{props.name}</div>
+                    <div className="Email">{props.email}</div>
+                </div>
             </div>
 
             <div className="Line"></div>
@@ -32,9 +37,9 @@ function LeftSide(props) {
             <div className="Line"></div>
 
             <div className="Footer">
-                <div onClick={props.ClickOptBtn} className="WBtnOpt"><button className="BtnOpt">P</button></div>
-                <div onClick={props.ClickOptBtn} className="WBtnOpt"><button className="BtnOpt">S</button></div>
-                <div onClick={props.ClickOptBtn} className="WBtnOpt"><button className="BtnOpt">T</button></div>
+                <div  onClick={props.ClickOptBtn} className="WBtnOpt"><button id="Profile" className="BtnOpt">P</button></div>
+                <div  onClick={props.ClickOptBtn} className="WBtnOpt"><button id="Settings" className="BtnOpt">S</button></div>
+                <div  onClick={props.ClickOptBtn} className="WBtnOpt"><button id="Theme" className="BtnOpt">T</button></div>
             </div>
         </div>
     )}
