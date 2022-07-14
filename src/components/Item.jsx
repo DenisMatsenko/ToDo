@@ -17,7 +17,7 @@ function Item(props) {
                 <div className={props.done ? "ItemTextOff" : "ItemText"}><div>{props.text}</div></div>
                 <div className={props.done ? "ItemDateOff" : "ItemDate"}><div>{props.marks}</div></div>
             </div>
-            <div onClick={() => {props.RemoveFromDB(props); console.log("delete")}} className="BinWrapper">
+            <div onClick={() => {props.RemoveFromDB(props)}} className="BinWrapper">
                 <div className="Ti"><img className="DoneSwitherImg" src={Bin}/></div>
             </div>
         </div>

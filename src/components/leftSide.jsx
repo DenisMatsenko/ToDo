@@ -1,11 +1,15 @@
 import React from "react";
 import style from "./AllStyle.css";
+import ProfileImg from "../images/Profile.png"
+import ThemeImg from "../images/Theme.png"
 
 function LeftSide(props) {
 
     function FiltrBtn(p) {
         props.setFiltrName(p.target.textContent)
     }
+
+    
 
     return(
         
@@ -37,9 +41,9 @@ function LeftSide(props) {
             <div className="Line"></div>
 
             <div className="Footer">
-                <div  onClick={props.ClickOptBtn} className="WBtnOpt"><button id="Profile" className="BtnOpt">P</button></div>
-                <div  onClick={props.ClickOptBtn} className="WBtnOpt"><button id="Settings" className="BtnOpt">S</button></div>
-                <div  onClick={props.ClickOptBtn} className="WBtnOpt"><button id="Theme" className="BtnOpt">T</button></div>
+                <div  onClick={() => {props.ClickOptBtn("Profile")}} className="WBtnOpt"><button id="Profile" className="BtnOpt"><img className="LeftSettingsIcon" src={ProfileImg}/></button></div>
+                {/* <div  onClick={() => {props.ClickOptBtn("Settings")}} className="WBtnOpt"><button id="Settings" className="BtnOpt">S</button></div> */}
+                <div  onClick={() => {props.ClickOptBtn("Theme")}} className="WBtnOpt"><button id="Theme" className="BtnOpt"><img className="LeftSettingsIcon" src={ThemeImg}/></button></div>
             </div>
         </div>
     )}

@@ -2,30 +2,114 @@ import React, { useState, useEffect, useRef } from "react";
 import LeftSide from "./components/leftSide";
 import RightSide from "./components/RightSide";
 import "./components/AllStyle.css";
-import AddPostWind from "./components/AddPostWind";
+import AddPostWind from "./components/Modules/AddPostWind";
+import SignInModule from "./components/Modules/SignInModule";
+import ThemeModule from "./components/Modules/ThemeModule";
 import Box from "./components/Box";
-import { createFactory } from "react";
 
 import {db, SignInwithGoogle} from "./firebase"
 import {set, ref, onValue, remove, update} from "firebase/database"
+import LoginModule from "./components/Modules/LoginModule";
 
 function App() {
+  const [isRegistered, setIsRegistered] = useState(false)
+
   const [AddPostWind_active, setAddPostWind_active] = useState(false);
+  const [signInModule_active, setSignInModule_active] = useState(false)
+  const [themeModule_active, setThemeModule_active] = useState(false)
+  const [moduleIsActive, setModuleIsActive] = useState(false)
+
+  const[name, setName] = useState(localStorage.getItem("name"))
+  const[email, setEmail] = useState(localStorage.getItem("email"))
+  const[img, setImg] = useState(localStorage.getItem("img"))
+
+  const UpdateBackground = () => {
+    if(isRegistered) {
+      let path = localStorage.getItem("email").split('@')[0] + "-" + localStorage.getItem("email").split('@')[1].split('.')[0] + "-" + localStorage.getItem("email").split('@')[1].split('.')[1]
+      onValue(ref(db, path + "/UserSettings/BackgroundImage"), (snapshot) => {
+        setBackgroundimg("url(BackgroundImages/" + snapshot.val() +")")
+      })
+    }
+  }
+
+
+  useEffect(() => {
+
+    if(email !== null || localStorage.getItem("email") != null) {
+      setIsRegistered(true)
+    }
+
+    UpdateBackground()
+    
+  }, [moduleIsActive]);
+
+  useEffect(() => {
+    if(email !== null || localStorage.getItem("email") !== null) {
+      setIsRegistered(true)
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if(isRegistered) {
+      CreateNewProfile()
+      UpdateBackground()
+      UpdateAllPosts()
+    }
+  }, [isRegistered]);
+
+  const CreateNewProfile = () => {
+      let path = localStorage.getItem("email").split('@')[0] + "-" + localStorage.getItem("email").split('@')[1].split('.')[0] + "-" + localStorage.getItem("email").split('@')[1].split('.')[1]
+    
+      onValue(ref(db, path), (snapshot) => {
+        if(snapshot.exists()) {
+        }
+        else {
+          set(ref(db, path+"/UserSettings"), {
+            BackgroundImage: "background7.jpg",
+            UserMarks: ["Today", "Tomorrow", "Everyday", "Important", "Work", "Home", "Hobby"]
+          })
+          set(ref(db, path+"/UserTasks/FirstTask"), {
+            id: "FirstTask",
+            text: "Hello there, " + localStorage.getItem("name").toString() + "!",
+            done: false,
+            marks: ["Important"]
+          })
+        }
+      })
+    
+      onValue(ref(db, path + "/UserSettings/BackgroundImage"), (snapshot) => {
+        setBackgroundimg("url(BackgroundImages/" + snapshot.val() +")")
+      })
+  }
+
+
+
   const [leftMenu_acvive, setLeftMenu_acvive] = useState(true);
   const [marksArr, setMarksArr] = useState([]);
-  const [addMarkToPost, setAddMarkToPost] = useState();
   const [myAddMark, setMyAddMark] = useState([]);
   const[filtrName, setFiltrName] = useState("All")
+  const [backgroundimg, setBackgroundimg] = useState("hii")
+
+  let marks = [
+    {key: 1, mark: "Today"},
+    {key: 2, mark: "Tomorrow"},
+    {key: 3, mark: "Everyday"},
+    {key: 4, mark: "Important"},
+    {key: 5, mark: "Work"},
+    {key: 6, mark: "Home"},
+    {key: 7, mark: "Hobby"},
+  ]
 
       // Реакция на Ентер
       useEffect(() => {
         const onKeypress = e => { 
-          if(e.key === 'ArrowLeft' && leftMenu_acvive) { 
+          if(e.key === 'ArrowLeft' && leftMenu_acvive && !moduleIsActive) { 
             setLeftMenu_acvive(false)
           }
-          else if(e.key === 'ArrowRight' && !leftMenu_acvive) {
+          else if(e.key === 'ArrowRight' && !leftMenu_acvive && !moduleIsActive) {
             setLeftMenu_acvive(true)
           }
+          
         }
 
         // avoid document.querySelectors -> useRef() instead
@@ -41,55 +125,36 @@ function App() {
   ])
   const[filtrBoxes, setFiltrBoxes] = useState([])
 
+  const [findImg, setFindImg] = useState("hiiiiiiii")
+
   const ClickOptBtn = (info) => {
-    if(info.target.id === "Profile") {
-      UpdateUserInfo()
+    if(info === "Profile") {
+      setSignInModule_active(true)
+      setModuleIsActive(true)
+    }
+    else if(info === "Theme") {
+      let path = localStorage.getItem("email").split('@')[0] + "-" + localStorage.getItem("email").split('@')[1].split('.')[0] + "-" + localStorage.getItem("email").split('@')[1].split('.')[1]
+      onValue(ref(db, path + "/UserSettings/BackgroundImage"), (snapshot) => {
+        setFindImg(snapshot.val())
+      })
+
+      setThemeModule_active(true)
+      setModuleIsActive(true)
+    }
+    else if(info === "Settings") {
+      console.log("isRegistered: ",  isRegistered)
+      console.log("email: ",  email)
+      console.log("backgroundimg: ",  backgroundimg)
     }
   }
 
   const DoneUdate = (info) => {
-    // var tempArr = allPosts;
-    // var i = IndexFind(info)
-
-    //   if(tempArr[i].id.toString() == info && tempArr[i].done === false) {
-    //     //console.log("before", tempArr[i])
-    //     tempArr[i].done = !tempArr[i].done
-    //     // console.log("after", tempArr[i])
-    //   }
-
-    //   else if(tempArr[i].id.toString() == info && tempArr[i].done === true) {
-    //     //console.log("before", tempArr[i])
-    //     tempArr[i].done = !tempArr[i].done
-    //     //console.log("after", tempArr[i])
-    //   }
-
-    //   setAllPosts(tempArr)
-
     UpdateDB(info)
-
-
-
     Filtr()
   }
-  
-
-  const IndexFind = (info) => {
-    for (let i = 0; i < allPosts.length; i++) {
-      if(allPosts[i].id.toString() == info) {
-        return i;
-      }
-    }
-  }
 
 
-  // const PushBoxes = () => {
-  //   setFiltrBoxes([
-  //     <Box name={filtrName} post={post} key={1} DoneUdate={DoneUdate}/>,
-  //      ])
-  // }
-
-
-
+  ///////////////filtrs for todo
   const Filtr = () => {
     let myArr = []
     let boxesArr = []
@@ -169,54 +234,10 @@ function App() {
             }
           }
           if (myArr.length !== 0) {
-          console.log(marksForFiltrArr[d], myArr)
           boxesArr = [...boxesArr, <Box name={marksForFiltrArr[d]} post={OrderOfItemsAndFiltr(myArr)} key={d} RemoveFromDB={RemoveFromDB} DoneUdate={DoneUdate}/>]}
         }
         setFiltrBoxes(boxesArr)
         break;
-
-
-      // case "Important":  
-      //   myArr = []
-
-      //   for (let i = 0; i < allPosts.length; i++) {
-      //     for (let u = 0; u < allPosts[i].marks.length; u++) {
-      //       if(allPosts[i].marks[u] === "Important ") 
-      //         myArr = [...myArr, allPosts[i]] 
-      //     }
-      //   }
-      //   return myArr
-
-      //   case "By date":
-      //     myArr = [
-      //       {id: 11241312414, text: "hi im denys", done: false, marks: ["Today ", "Work "],},
-      //       {id: 11241312424, text: "hi im michal", done: false, marks: ["Important ", "Work "],},
-      //       {id: 11241312444, text: "hi im tomas", done: false, marks: ["Today ", "Work "],},
-      //     ]
-  
-      //     // for (let i = 0; i < allPosts.length; i++) {
-      //     //   for (let u = 0; u < allPosts[i].marks.length; u++) {
-      //     //     if(allPosts[i].marks[u] === "Important ") 
-      //     //       myArr = [...myArr, allPosts[i]] 
-      //     //   }
-      //     // }
-      //     return myArr
-      
-      // case "Complete":
-      //   myArr =[]
-      //   for (let i = 0; i < allPosts.length; i++) {
-      //       if(allPosts[i].done === true)
-      //         myArr = [...myArr, allPosts[i]]
-      //   }
-      //   return myArr
-
-      // case "Uncomplete":
-      //   myArr =[]
-      //   for (let i = 0; i < allPosts.length; i++) {
-      //       if(allPosts[i].done === false)
-      //         myArr = [...myArr, allPosts[i]]
-      //   }
-      //   return myArr
     }
   }
 
@@ -249,16 +270,6 @@ function App() {
     return arr;
   }
 
-  let marks = [
-    {key: 1, mark: "Today"},
-    {key: 2, mark: "Tomorrow"},
-    {key: 3, mark: "Everyday"},
-    {key: 4, mark: "Important"},
-    {key: 5, mark: "Work"},
-    {key: 6, mark: "Home"},
-    {key: 7, mark: "Hobby"},
-  ]
-
   function AddMarksToPost(MyMarkArr) {
     setMyAddMark(MyMarkArr)
   }
@@ -276,13 +287,10 @@ function App() {
 
 //////////////////////////////////////////////////////////User info functions////////////////////////////////////////////////////////
 
-const[name, setName] = useState(localStorage.getItem("name"))
-const[email, setEmail] = useState(localStorage.getItem("email"))
-const[img, setImg] = useState(localStorage.getItem("img"))
+
 
 const UpdateUserInfo = () => {
   SignInwithGoogle()
-
   for (let i = 0; i <= 10000; i += 1000) {
     setTimeout(UpdateInfo, i);
   }
@@ -292,7 +300,10 @@ const UpdateInfo = () => {
   setName(localStorage.getItem("name"))
   setEmail(localStorage.getItem("email"))
   setImg(localStorage.getItem("img"))
-  
+
+    if(isRegistered) {
+      CreateNewProfile()
+  }
 }
 
 
@@ -300,8 +311,7 @@ const UpdateInfo = () => {
 ///////////////////////////////////////////////////////////database functions/////////////////////////////////////////////////////////
 //write to db
 const AddToDB = (info) => {
-
-  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1]  + "/" + info.id
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1]  + "/UserTasks/" + info.id
 
   set(ref(db, path), {
     id: info.id,
@@ -309,9 +319,6 @@ const AddToDB = (info) => {
     done: info.done,
     marks: info.marks.length > 0 ? info.marks : [""]
   })
-
-  setMyAddMark([])
-  setAddPostWind_active(false)
 }
 
 //read db
@@ -321,32 +328,47 @@ useEffect(() => {
 
 useEffect(() => {
   UpdateAllPosts()
+  setSignInModule_active(false)
+  setModuleIsActive(false)
 }, [email]);
 
- const UpdateAllPosts = () => { 
-  setAllPosts([])
-  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1]
+const UpdateAllPosts = () => {
+  if(isRegistered) {
+    setAllPosts([])
+      let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/UserTasks"
 
-  onValue(ref(db, path), (snapshot) => {
-    const data = snapshot.val();
-    if(data !== null) {
-      setAllPosts(Object.values(data))
-    }
-  })
+      onValue(ref(db, path), (snapshot) => {
+        const data = snapshot.val();
+        if(data !== null) {
+          setAllPosts(Object.values(data))
+        }
+      })
+  }
 }
 
 //update db obj
 const UpdateDB = (info) => {
-  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/" +info.id
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/UserTasks/" +info.id
   update(ref(db, path), {
     done: !info.done
   })
 }
 
+
+
+//update UserSettings background db obj
+const UpdateUserDBObj = (info) => {
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/" + "UserSettings"
+  update(ref(db, path), {
+    // BackgroundImage: info.split('/')[3].split('.')[0] + "." + info.split('/')[3].split('.')[2]
+    BackgroundImage: info
+  })
+  setBackgroundimg("url(BackgroundImages/" + info + ")")
+}
+
 //delete
 const RemoveFromDB = (info) => {
-  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/" + info.id
-  console.log("path: ",  path)
+  let path = email.split('@')[0] + "-" + email.split('@')[1].split('.')[0] + "-" + email.split('@')[1].split('.')[1] + "/UserTasks/" + info.id
   remove(ref(db, path))
   UpdateAllPosts()
 }
@@ -356,9 +378,12 @@ const RemoveFromDB = (info) => {
 
   return (
     <div className="App" id="App">
-      <AddPostWind myAddMark={myAddMark} AddMarksToPost={AddMarksToPost} marksArr={marksArr} setMarksArr={setMarksArr} marks={marks} AddPostWind_active={AddPostWind_active} setAddPostWind_active={setAddPostWind_active} AddPostToPosts={AddToDB}/>
-      <LeftSide name={name} email={email} img={img} ClickOptBtn={ClickOptBtn} setFiltrName={setFiltrName} leftMenu_acvive={leftMenu_acvive}/>
-      <RightSide filtrBoxes={filtrBoxes} AddMarksToPost={AddMarksToPost} marks={marks} setMarksArr={setMarksArr} leftMenu_acvive={leftMenu_acvive} setLeftMenu_acvive={setLeftMenu_acvive} setAddPostWind_active={setAddPostWind_active}/>
+      <LoginModule isRegistered={isRegistered} UpdateUserInfo={UpdateUserInfo}/>
+      <ThemeModule findImg={findImg} backgroundimg={backgroundimg} UpdateUserDBObj={UpdateUserDBObj} setModuleIsActive={setModuleIsActive} themeModule_active={themeModule_active} setThemeModule_active={setThemeModule_active}/>
+      <SignInModule setModuleIsActive={setModuleIsActive} UpdateUserInfo={UpdateUserInfo} userInfo={{name: name, email: email, img: img}} signInModule_active={signInModule_active} setSignInModule_active={setSignInModule_active}/>
+      <AddPostWind moduleIsActive={moduleIsActive} setModuleIsActive={setModuleIsActive} myAddMark={myAddMark} AddMarksToPost={AddMarksToPost} marksArr={marksArr} setMarksArr={setMarksArr} marks={marks} AddPostWind_active={AddPostWind_active} setAddPostWind_active={setAddPostWind_active} AddPostToPosts={AddToDB}/>
+      <LeftSide setSignInModule_active={setSignInModule_active} name={name} email={email} img={img} ClickOptBtn={ClickOptBtn} setFiltrName={setFiltrName} leftMenu_acvive={leftMenu_acvive}/>
+      <RightSide backgroundimg={backgroundimg} filtrBoxes={filtrBoxes} AddMarksToPost={AddMarksToPost} marks={marks} setMarksArr={setMarksArr} leftMenu_acvive={leftMenu_acvive} setLeftMenu_acvive={setLeftMenu_acvive} setAddPostWind_active={setAddPostWind_active}/>
     </div>
   );
 }

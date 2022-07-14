@@ -6,6 +6,7 @@ import Addimg from "../images/Add.png"
 import Arrowimg from "../images/Arrow.png"
 import MarkBtn from "./Buttons/MarkBtn";
 
+
 function RightSide(props) { 
 
 
@@ -16,7 +17,9 @@ function RightSide(props) {
     // }
 
     return(
-        <div className="RightSide">
+        <div className="RightSide" style={{backgroundImage: props.backgroundimg}}>
+        {/* <div className="RightSide" style={{backgroundImage: "url(BackgroundImages/background7.jpg)"}}> */}
+
 
             <div className="DivForBtn">
                 <div className="WLMBtn" onClick={() => {props.setLeftMenu_acvive(!props.leftMenu_acvive)}}><div  className="CloseBtn"><img className={props.leftMenu_acvive ? "AimgL" : "AimgR"} src={Arrowimg}/></div></div>

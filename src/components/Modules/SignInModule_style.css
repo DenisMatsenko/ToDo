@@ -1,0 +1,131 @@
+.SignInModule {
+    z-index: 4;
+
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    backdrop-filter: blur(2px);
+    background-color: rgba(0, 0, 0, 0.681);
+
+    display:  flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.SignInModuleContent {
+    height: 30rem;
+    width: 46rem;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+
+    border-radius: 30px;
+
+    background-color: white;
+}
+
+.SignInModuleNone {
+    display: none;
+}
+
+.CloseBtnWrapper {
+    width: 100%;
+
+    display: flex;
+    justify-content: end;
+}
+
+.CloseSignBtn {
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    margin-top: 20px;
+    margin-right: 20px;
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+}
+
+.CloseSignBtn:hover {
+    transform: rotate(135deg);
+    transition: all 0.3s ease;
+}
+
+.UserImg {
+    height: 150px;
+    width: 150px;
+
+    border-radius: 100%;
+}
+
+.UserImgWrapper {
+    width: 100%;
+    height: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.UserNameWrapper {
+    font-size: 160%;
+    margin-top: 10px;
+}
+.UserEmailWrapper {
+    font-size: 140%;
+    color: gray;
+}
+
+.SignInWrapper {
+    height: 30%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.SignBtn {
+    background-color: white;
+
+    border-bottom: 2px solid rgb(168, 168, 168);
+    border-right: 2px solid rgb(168, 168, 168);
+
+    border-top: 2px solid rgb(201, 201, 201);
+    border-left: 2px solid rgb(201, 201, 201);
+    
+
+    display: flex;
+
+    justify-content: space-around;
+    align-items: center;
+
+    height: 45px;
+    width: 200px;
+
+    border-radius: 3px;
+}
+
+.SignBtn:hover {
+    background-color: rgb(244, 244, 244);
+}
+
+.SignBtn:active {
+    border-bottom: 2px solid rgb(195, 195, 195);
+    border-right: 2px solid rgb(195, 195, 195);
+
+    border-top: 2px solid rgb(222, 222, 222);
+    border-left: 2px solid rgb(222, 222, 222);
+}
+
+.GoogleImg {
+    height: 30px;
+    width: 30px;
+}
+
+.GoogleBtnText {
+    
+    color: gray;
+    font-size: 120%;
+}
+

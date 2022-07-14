@@ -27,7 +27,6 @@ body, main{
     width: 100%;
     
 
-    background-image: url("../images/backgraund5.jpg");
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -490,6 +489,11 @@ body, main{
 
 .BtnOpt:hover {
     background-color: rgb(244, 244, 244);
+}
+
+.LeftSettingsIcon {
+    height: 24px;
+    width: 24px;
 }
 
 
